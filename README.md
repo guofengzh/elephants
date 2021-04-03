@@ -1,14 +1,14 @@
-Monads are Elephants
+# Monads are Elephants
 -------
 [Part 4](http://james-iry.blogspot.com/2007/09/monads-are-elephants-part-4.html)
 
 TUESDAY, NOVEMBER 6, 2007
 
-Monads are Elephants Part 4
+## Monads are Elephants Part 4
 
 Until you experience an adult elephant first hand you won't really understand just how big they can be. If monads are elephants then so far in this series of articles I've only presented baby elephants like List and Option. But now it's time to see a full grown adult pachyderm. As a bonus, this one will even do a bit of circus magic.
 
-Functional Programming and IO
+### Functional Programming and IO
 
 In functional programming there's a concept called referential transparency. Referential transparency means you can call a particular function anywhere and any time and the same arguments will always give the same results. As you might imagine, a referentially transparent function is easier to use and debug than one that isn't.
 
@@ -20,7 +20,7 @@ You might guess that monads provide a solution for referentially transparent IO 
 
 Of course, you may not think that referentially transparent IO is terribly important in Scala. I'm not here to preach the one true way of purely functional referential transparency. I'm here to talk about monads and it just so happens that the IO monad is very illustrative of how several monads work.
 
-The World In a Cup
+### The World In a Cup
 
 Reading a string from the console wasn't referentially transparent because readLine depends on the state of the user and "user" isn't one of its parameters. A file reading function would depend on the state of the file system. A function that reads a web page would depend on the state of the target web server, the Internet, and the local network. Equivalent output functions have similar dependencies.
 
@@ -78,7 +78,7 @@ class HelloWorld_v1 extends IOApplication_v1 {
     putString(startState, "Hello world")
 }
 ```
-That Darn Property 3
+### That Darn Property 3
 
 The 3rd property said that the world can only be in one state at any given moment in time. I haven't solved that one yet and here's why it's a problem
 ```
@@ -96,7 +96,7 @@ class Evil_v1 extends IOApplication_v1 {
 ```
 Here I've called getString twice with the same inputs. If the code was referentially transparent then the result, a and b, should be the same but of course they won't be unless the user types the same thing twice. The problem is that "startState" is visible at the same time as the other world states stateA and stateB.
 
-Inside Out
+### Inside Out
 
 As a first step towards a solution, I'm going to turn everything inside out. Instead of iomain being a function from WorldState to WorldState, iomain will return such a function and the main driver will execute it. Here's the code
 ```
@@ -137,7 +137,7 @@ class HelloWorld_v2 extends IOApplication_v2 {
 ```
 At first glance we seem to have solved our problem because WorldState is nowhere to be found in HelloWorld. But it turns out it's just been buried a bit.
 
-Oh That Darn Property 3
+### Oh That Darn Property 3
 
 ```
 class Evil_v2 extends IOApplication_v2 {
@@ -155,7 +155,7 @@ class Evil_v2 extends IOApplication_v2 {
 
 Evil creates exactly the kind of function that iomain is supposed to return but once again things are broken. As long as the programmer can create arbitrary IO functions he or she can see through the WorldState trick.
 
-Property 3 Squashed For Good
+### Property 3 Squashed For Good
 
 All we need to do is prevent the programmer from creating arbitrary functions with the right signature. Um...we need to do what now?
 
@@ -223,7 +223,7 @@ Unfortunately, we've got a combining problem. We can't combine multiple IOAction
 
 Hmmmm, IOAction is a container for an expression and monads are containers. IOAction needs to be combined and monads are combinable. Maybe, just maybe...
 
-Ladies and Gentleman I Present the Mighty IO Monad
+### Ladies and Gentleman I Present the Mighty IO Monad
 
 The IOAction.apply factory method takes an expression of type A and returns an IOAction[A]. It sure looks like "unit." It's not, but it's close enough for now. And if we knew what flatMap was for this monad then the monad laws would tell us how to create map using it and unit. But what's flatMap going to be? The signature needs to look like def flatMap[B](f: A=>IOAction[B]):IOAction[B]. But what does it do?
 
@@ -270,7 +270,7 @@ The IOAction factory and SimpleAction remain the same. The IOAction class gets t
 
 The trick in ChainedAction is its apply method. First it calls action1 with the first world state. This results in a second world state and an intermediate result. The function it was chained to needs that result and in return the function generates another action: action2. action2 is called with the second world state and the tuple that come out is the end result. Remember that none of this will happen until the main driver passes in an initial WorldState object.
 
-A Test Drive
+### A Test Drive
 
 At some point you may have wondered why getString and putString weren't renamed to something like createGetStringAction/createPutStringAction since that's in fact what they do. For an answer, look at what happens when we stick 'em in our old friend "for".
 ```
@@ -289,7 +289,7 @@ object HelloWorld_v4 extends IOApplication_v4 {
 ```
 It's as if "for" and getString/putString work together to create a mini language just for creating a complex IOActions.
 
-Take a Deep Breath
+### Take a Deep Breath
 
 Now's a good moment to sum up what we've got. IOApplication is pure plumbing. Users subclass it and create a method called iomain which is called by main. What comes back is an IOAction - which could in fact be a single action or several actions chained together. This IOAction is just "waiting" for a WorldState object before it can do its work. The ChainedAction class is responsible for ensuring that the WorldState is changed and threaded through each chained action in turn.
 
@@ -299,7 +299,7 @@ It's a good start; we've almost got a perfectly good monad in IOAction. We've go
 
 The second problem is that, in general, IO can fail and we haven't captured that just yet.
 
-IO Errors
+### IO Errors
 
 In monadic terms, failure is represented by a zero. So all we need to do is map the native concept of failure (exceptions) to our monad. At this point I'm going to take a different tack from what I've been doing so far: I'll write one final version of the library with comments inline as I go.
 
@@ -489,7 +489,7 @@ object HelloWorld extends IOApplication {
 }
 ```
 
-Conclusion for Part 4
+### Conclusion for Part 4
 
 In this article I've called the IO monad 'IOAction' to make it clear that instances are actions that are waiting to be performed. Many will find the IO monad of little practical value in Scala. That's okay, I'm not here to preach about referential transparency. However, the IO monad is one of the simplest monads that's clearly not a collection in any sense.
 
