@@ -9,6 +9,7 @@ Monads are Elephants Part 4
 Until you experience an adult elephant first hand you won't really understand just how big they can be. If monads are elephants then so far in this series of articles I've only presented baby elephants like List and Option. But now it's time to see a full grown adult pachyderm. As a bonus, this one will even do a bit of circus magic.
 
 Functional Programming and IO
+
 In functional programming there's a concept called referential transparency. Referential transparency means you can call a particular function anywhere and any time and the same arguments will always give the same results. As you might imagine, a referentially transparent function is easier to use and debug than one that isn't.
 
 There's one area where referential transparency would seem impossible to achieve: IO. Several calls to the same readLine console function may result in any number of different strings depending on things like what the user ate for breakfast. Sending a network packet may end in successful delivery or it might not.
@@ -27,9 +28,10 @@ All this could be summed up by creating a class called WorldState and making it 
 
 The slight-of-hand I'll use is to model only a few aspects of the world and just pretend WorldState knows about the rest of the world. Here are some aspects that would be useful
 
-The state of the world changes between IO functions.
-The world's state is what it is. You can't just create new ones whenever you want (val coolWorldState = new WorldState(){def jamesIsBillionaire = true}).
-The world is in exactly one state at any moment in time.
+1. The state of the world changes between IO functions.
+2. The world's state is what it is. You can't just create new ones whenever you want (val coolWorldState = new WorldState(){def jamesIsBillionaire = true}).
+3. The world is in exactly one state at any moment in time.
+
 Property 3 is a bit tricky so let's deal with properties 1 and 2 first.
 
 Here's a rough sketch for property 1
@@ -77,6 +79,7 @@ class HelloWorld_v1 extends IOApplication_v1 {
 }
 ```
 That Darn Property 3
+
 The 3rd property said that the world can only be in one state at any given moment in time. I haven't solved that one yet and here's why it's a problem
 ```
 class Evil_v1 extends IOApplication_v1 {
@@ -135,6 +138,7 @@ class HelloWorld_v2 extends IOApplication_v2 {
 At first glance we seem to have solved our problem because WorldState is nowhere to be found in HelloWorld. But it turns out it's just been buried a bit.
 
 Oh That Darn Property 3
+
 ```
 class Evil_v2 extends IOApplication_v2 {
   import RTConsole_v2._
