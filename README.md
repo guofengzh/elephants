@@ -1,6 +1,6 @@
 # Monads are Elephants
 -------
-[Part 4](http://james-iry.blogspot.com/2007/09/monads-are-elephants-part-4.html)
+[Monads are Elephants Part 4](http://james-iry.blogspot.com/2007/09/monads-are-elephants-part-4.html)
 
 TUESDAY, NOVEMBER 6, 2007
 
