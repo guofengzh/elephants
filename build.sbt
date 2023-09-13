@@ -1,4 +1,4 @@
-import Dependencies._
+import Dependencies.*
 
 lazy val compilerOptions = Seq(
   "-unchecked",  // Enable additional warnings where generated code depends on assumptions.
